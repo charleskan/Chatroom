@@ -1,8 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pma001/features/auth/blocs/auth_bloc.dart';
+import 'package:pma001/features/auth/screen/splash_screen.dart';
 import 'package:pma001/features/auth/widgets/register_screen.dart';
 import 'package:pma001/features/contacts/screens/contact_list_screen.dart';
+import 'package:pma001/features/setting/setting_screen.dart';
 
 import 'features/chatroom/widgets/chatroom_screen.dart';
 
@@ -12,22 +16,58 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _authBloc = AuthBloc();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+    return BlocProvider<AuthBloc>(
+      create: (context) => _authBloc,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+          ),
         ),
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
+            case "chat":
+              return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) {
+                    return ChatRoomScreen(
+                      title: settings.arguments as String,
+                    );
+                  });
+            case "register":
+              return MaterialPageRoute(
+                  builder: (context) => const RegisterScreen());
+            case "contacts":
+              return MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) => const ContactListScreen());
+            case "settings":
+              return MaterialPageRoute(
+                  builder: (context) => const SettingScreen());
+            // default:
+            //   return MaterialPageRoute(
+            //       builder: (context) => const ChatRoomScreen(
+            //             title: "Chatting with: ",
+            //           ));
+          }
+        },
+        home: SplashScreen(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -51,20 +91,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _counter = 14;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "settings");
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
         title: Row(
           children: [
             const Icon(
@@ -84,30 +124,23 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               TextButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ContactListScreen()));
+                    Navigator.pushNamed(context, "contacts");
                   },
                   icon: const Icon(Icons.login),
                   label: const Text('Login')),
               TextButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ChatRoomScreen(
-                                  title: 'Chat Room',
-                            )));
+                    // Navigator.pushNamed(context, "chat",
+                    //     arguments: "Contact ${Random().nextInt(100)}");
                   },
                   icon: const Icon(Icons.logout),
                   label: const Text('Logout')),
               TextButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterScreen()));
+                    Navigator.pushNamed(
+                      context,
+                      "register",
+                    );
                   },
                   icon: const Icon(Icons.app_registration),
                   label: const Text('Register')),

@@ -49,7 +49,7 @@ final List<Message>messages = [
 class Message {
   final String content;
   final String id;
-  final String type;
+  final String? type;
   final String authorId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -57,7 +57,7 @@ class Message {
   Message({
     required this.content,
     required this.id,
-    required this.type,
+    this.type,
     required this.authorId,
     this.createdAt,
     this.updatedAt,

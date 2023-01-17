@@ -16,7 +16,6 @@ class ChatRoomScreen extends StatefulWidget {
 }
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  final String title = "Chatting with: ";
 
   @override
   void initState() {
@@ -26,6 +25,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+  final String title = ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
       appBar: ChatroomAppBar(title: title),
       body: SafeArea(

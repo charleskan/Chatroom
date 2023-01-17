@@ -23,9 +23,9 @@ class ChatroomAppBar extends StatelessWidget implements PreferredSizeWidget {
               Navigator.pop(context);
             },
           ),
-          const Text("Chatting with: 123"),
+           Text(title),
         ],
-      ), // Chatting with: ${widget.title}
+      ),
       actions: [
         IconButton(
           icon: const Icon(Icons.more_vert),
